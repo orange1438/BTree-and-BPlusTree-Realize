@@ -1,7 +1,9 @@
-这是两个单独的程序例子，2个文件都有单独的main函数
-
-1.B+树的实现代码：bplustree.cpp
-2.B树的实现代码：btree.cpp
+文件说明：
+1.Tree.h：B树和B+树的通用接口，虚基类。BTree和BPlusTree都继承它，只有BPlusTree才有linear函数
+2.BTree.h,BTree.cpp：B树的声明、实现代码
+3.BPlusTree.h,BPlusTree.cpp：B+树的声明、实现代码，注：大多数的函数，B和B+都是一样的，但是我还是分开写了，比如输出函数
+4.struct.h:  全局变量的定义
+5.mian.cpp：使用用例,因为我测试的时候windows和linux都有，为使中文不乱码，我在main写的简单的英语说明
 
 
 时间测试说明：
