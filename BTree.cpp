@@ -2,7 +2,15 @@
 #include "struct.h"
 #include <stdio.h>
 #include <stdlib.h>
-	
+
+#ifdef WIN32
+	#include <io.h>
+#endif
+
+#ifdef LINUX
+	#include <unistd.h>
+#endif
+
 btree_node* BTree::btree_node_new()
 {
 	btree_node* node = (btree_node *)malloc(sizeof(btree_node));
@@ -30,7 +38,6 @@ btree_node* BTree::btree_create()
 	if(NULL == node) {
 		return NULL;
 	}
-
 	return node;
 }
 
@@ -86,7 +93,8 @@ void BTree::btree_insert_nonfull(btree_node *node, int target)
 
 		node->k[pos] = target;
 		node->num += 1;
-
+		btree_node_num+=1;
+		
 	} else {
 		// 沿着查找路径下降
 		int pos = node->num;
@@ -210,6 +218,9 @@ void BTree::btree_delete_nonone(btree_node *root, int target)
 				root->k[j-1] = root->k[j];
 			}
 			root->num -= 1;
+			
+			btree_node_num-=1;
+			
 		} else {
 			printf("target not found\n");
 		}
@@ -347,7 +358,6 @@ void BTree::btree_inorder_print(btree_node *root)
 			btree_inorder_print(root->p[i+1]);
 		}
 	}
-
 }
 
 void BTree::btree_level_display(btree_node *root) 
@@ -377,15 +387,51 @@ void BTree::btree_level_display(btree_node *root)
 	printf("\n");
 }
 
-
+void BTree::Save(btree_node *root) 
+{
+	/*
+	storage_struct ss;
+	
+	// malloc len space
+	ss.len = btree_node_num;
+	ss.snode = (storage_node *)malloc(sizeof(storage_node)*ss.len);
+	
+	ss.snode[0].bnode = *root;
+	for(int i=1;i<ss.len;i++)
+	{
+		btree_node *node = btree_node_new();
+		if(NULL == node) {
+			return;
+		}
+	}
+	
+//	fwrite(&ss,sizeof(ss),1,pfile);
+*/
+}
 
 BTree::BTree(void)
-{
-	roots = btree_create();
+{	
+	// 先判断文件是否存在
+ 	// windows下，是io.h文件，linux下是 unistd.h文件 
+  	// int access(const char *pathname, int mode);
+   	if(-1==access("define.Bdb",F_OK))
+    {
+	   	// 不存在 ,创建 
+	//   	pfile = fopen("bstree.b","w");
+   		roots = btree_create();
+	}
+ 	else
+  	{
+//	   	pfile = fopen("bstree.b","r+");
+	   	roots = btree_create();
+//	   	fread(roots,sizeof(roots),1,pfile);
+   	}
+	
 }
 
 
 BTree::~BTree(void)
 {
+//	fclose(pfile); 
 }
 

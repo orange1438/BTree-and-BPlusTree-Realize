@@ -20,7 +20,7 @@ protected:
 	virtual btree_node *btree_delete(btree_node *root, int target);
 	virtual void btree_inorder_print(btree_node *root);
 	virtual void btree_level_display(btree_node *root);
- 	
+ 	virtual void Save(btree_node *root);
 	/**
 	 * @brief print tree linearly using prev/next pointer
 	 *
@@ -31,7 +31,6 @@ protected:
 public:
 	BPlusTree(void);
 	~BPlusTree(void);
-	
 	void linear_print();
 };
 

@@ -3,6 +3,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef WIN32
+	#include <io.h>
+#endif
+
+#ifdef LINUX
+	#include <unistd.h>
+#endif
+
 btree_node* BPlusTree::btree_node_new()
 {
     btree_node *node = (btree_node *)malloc(sizeof(btree_node));
@@ -96,7 +104,8 @@ void BPlusTree::btree_insert_nonfull(btree_node *node, int target)
 
         node->k[pos] = target;
         node->num += 1;
-
+		btree_node_num+=1;
+		
     } else {
         int pos = node->num;
         while(pos > 0 && target < node->k[pos-1]) {
@@ -202,6 +211,8 @@ void BPlusTree::btree_delete_nonone(btree_node *root, int target)
 				root->k[j-1] = root->k[j];
 			}
 			root->num -= 1;
+			btree_node_num-=1;
+			
 		} else {
 			printf("target not found\n");
 		}
@@ -341,6 +352,11 @@ void BPlusTree::btree_linear_print(btree_node *root)
 	}
 }
 
+void BPlusTree::Save(btree_node *root) 
+{
+//	fwrite(root,sizeof(root),1,pfile);
+}
+
 void BPlusTree::btree_level_display(btree_node *root) 
 {
 	// just for simplicty, can't exceed 200 nodes in the tree
@@ -375,7 +391,21 @@ void BPlusTree::linear_print()
 
 BPlusTree::BPlusTree(void)
 {
-	roots = btree_create();
+	// 先判断文件是否存在
+ 	// windows下，是io.h文件，linux下是 unistd.h文件 
+  	// int access(const char *pathname, int mode);
+   	if(-1==access("define.Bdb",F_OK))
+    {
+	   	// 不存在 ,创建 
+//	   	pfile = fopen("bplus.bp","w");
+   		roots = btree_create();
+	}
+ 	else
+  	{
+//	   	pfile = fopen("bplus.bp","r+");
+	   	roots = btree_create();
+//	   	fread(roots,sizeof(roots),1,pfile);
+   	}
 }
 
 BPlusTree::~BPlusTree(void)
